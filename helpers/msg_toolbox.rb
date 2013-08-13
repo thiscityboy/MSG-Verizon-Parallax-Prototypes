@@ -134,14 +134,18 @@ module MsgToolbox
       @code = 'NONE'
     else
       @code = response_hash["code"][0]
-      unless shortcode.nil?
-        @coupon_url="http://mp.vibescm.com/p/#{mp_id}?code=#{@code}"
+    end
+    unless shortcode.nil?
+      if @code == 'NONE'
+         @sms_body="Sorry, no offers are available at this time"
+      else
+         @coupon_url="http://mp.vibescm.com/p/#{mp_id}?code=#{@code}"
         shortener = UrlShortener.new
         @short_url = shortener.shorten(@coupon_url)
         @sms_body="For an exclusive offer click: #{@short_url}?c=#{@code} Reply HELP for help, STOP to cancel-Msg&data rates may apply"
-        sender = SmsSender.new
-        sender.send(mdn, @sms_body, shortcode)
       end
+      sender = SmsSender.new
+      sender.send(mdn, @sms_body, shortcode)
     end
     @code
   end
