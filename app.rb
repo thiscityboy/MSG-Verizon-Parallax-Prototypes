@@ -11,6 +11,7 @@ class MyApp < Sinatra::Application
   register Sinatra::Reloader
   set :protection, :except => :frame_options
   enable :sessions
+  # to set token:  heroku config:set SECRET_TOKEN=`openssl rand -hex 20`
   set :session_secret, ENV["SECRET_TOKEN"] || '03c9fe100fcf579cd70229898381157898423345673849e10d0c54121cc37bda6a66ec2ae3'
 
   #uncomment to add mongo support
