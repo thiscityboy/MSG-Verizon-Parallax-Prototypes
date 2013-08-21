@@ -35,8 +35,8 @@ module MsgToolbox
   #   short url
   #
   ##
-  def shorten_url(long_url)
-    @short_url = shorten(long_url)
+  def shorten_url(long_url, campaign_id)
+    @short_url = shorten(long_url, campaign_id)
   end
 
   ##
@@ -334,26 +334,51 @@ module MsgToolbox
 
     def send_message(mdn, body, short_code)
       mdn=clean_mdn(mdn)
-      payload = "<?xml version='1.0' encoding='UTF-8'?><mtMessage><destination address='#{mdn}' type='MDN'/><source address='#{short_code}' type='SC' /><text><![CDATA[#{body}]]></text></mtMessage>"
+      req_payload = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+                    <mtMessage>
+                      <destination address=\"#{mdn}\" />
+                      <source address=\"#{shortcode}\" type=\"SC\" />
+                      <text><![CDATA[#{body}]]></text>
+                    </mtMessage>"
+      conn = Faraday.new "https://api.vibesapps.com/MessageApi/mt/messages", :ssl => {:verify => false}
+      conn.basic_auth(ENV['SPLAT_API_USER'], ENV['SPLAT_API_PASS'])
 
-      un = "Vibes #{ENV['SPLAT_API_USER']}"
-      pw = ENV['SPLAT_API_PASS']
-
-      conn = Faraday.new 'https://messageapi.vibesapps.com/MessageApi', ssl: {verify: false}
-      @result = conn.post do |req|
+      response = conn.post do |req|
         req.headers['Content-Type'] = 'text/xml'
-        req.headers['Authorization'] = "#{un}:#{pw}"
-        req.body = payload
+        req.body = req_payload
       end
-      puts '++++++++++++ SMS Sender response: ' + @result.body
-      @result.body
+      puts "==== sms response ==== " + response.body
+      @response = response.body
     end
 
-    def shorten(url)
-      conn = Faraday.new 'https://trustapi2.vibesapps.com/', ssl: {verify: false}
+    def self.shorten(urlin, campaignid)
+      @url = "http://trustapi.vibesapps.com/UrlShortener/api/shorten"
+      @payload = {:url => urlin}
+
+      if mdn
+        @payload['recipientaltkey'] = mdn
+      end
+
+      if accountid
+        @payload['accountid'] = accountid
+      end
+
+      if campaignid
+        @payload['campaignid'] = campaignid
+      end
+
+      @payload['messageTemplateId']='1'
+      @payload['application'] = 'MSG'
+
+      conn = Faraday.new
       conn.basic_auth(ENV['SHORT_USER'], ENV['SHORT_PASS'])
-      resp = conn.get "/UrlShortener/api/shorten?url=#{url}"
-      @short_url = resp.body
+      response = conn.post do |req|
+        req.url @url
+        req.headers['Content-Type'] = 'application/json'
+        req.body = @payload.to_json
+      end
+
+      @result = response.body
     end
 
 end
