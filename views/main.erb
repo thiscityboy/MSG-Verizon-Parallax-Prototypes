@@ -1,9 +1,9 @@
-<div id="background"><img src="/img/bg.png" width="100%"></div>
+	<div id="background"><img src="/img/bg.jpg" width="100%"></div>
 
 		<ul id="scene" class="scene">
-			<li id="team-logo" class="layer" data-depth="1.00"><img src="/img/team-logo.png"></li>
-			<li id="player" class="layer" data-depth="0.60"><img src="/img/player.png"></li>
-			<li id="button"class="layer" data-depth="0.40">Passbook</li>
+			<li id="team-logo" class="layer" data-depth="0.20"><img src="/img/team-logo.png"></li>
+			<li id="player" class="layer" data-depth="0.60"><img src="/img/player3.png"></li>
+			<li id="btn-overlay" class="layer" data-depth="0"><img src="/img/btn-overlay.png"></li>
 		</ul>
 
 	<script src="/js/parallax.js"></script>
@@ -13,4 +13,8 @@
 	var scene = document.getElementById('scene');
 	var parallax = new Parallax(scene);
 
+	</script>
+
+	<script>
+	$('#yourElement').addClass('animated bounceOutLeft');
 	</script>
