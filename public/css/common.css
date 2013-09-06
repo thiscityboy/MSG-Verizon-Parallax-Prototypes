@@ -95,3 +95,27 @@ label.error {
   animation-delay: 1s;
 }
 
+.header {
+  z-index: 9999;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#scene {
+  top: 40px;
+  margin-bottom: 50px;
+}
+
+.custom-footer {
+  height: 20px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: #FC0D1B;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
